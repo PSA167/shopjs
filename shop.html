@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        table{
+            width: 70%;
+            margin: auto;
+            text-align: left;
+            border-collapse: collapse;
+            border: 1px solid rgb(102, 98, 98);
+        }
+        thead{
+            background-color: black;
+            color: #fff;
+        }
+        tr, td, th{
+            padding: 10px 15px;
+        }
+        img{
+            width: 70px;
+        }
+        tbody tr:nth-child(odd) {
+            background-color: rgb(230, 223, 215);
+        }
+        tbody tr:hover{
+            background-color: rgba(146, 163, 163, 0.722);
+        }
+
+        .container{
+            width: 70%;
+            margin: 30px auto;
+            box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.821);
+        }
+        .row{
+            display: none;
+            max-width: 100%;
+            max-height: 200px;
+            margin: 0;
+            padding: 0;
+            flex-direction: row;
+        }
+
+        .col-2{
+            flex-basis: 20%;
+        }
+        .col{
+            flex-basis: fill;
+            padding: 10px 30px;
+        }
+        .row img{
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row" id="landDetail">
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Rating</th>
+                <th>Image</th>
+            </tr>
+        </thead>
+        <tbody id="page"></tbody>
+    </table>
+    
+
+
+    <script>
+
+        // Ajax , fetch , async await
+        // fetch
+        // let page = document.getElementById('page');
+        // let lists = '';
+        // fetch("https://fakestoreapi.com/products")
+        //     .then(response => response.json())
+        //     .then(result => console.log(result));
+            
+
+        // async await fetch
+        // let callApi = async () => {
+        //     let response = await fetch("https://fakestoreapi.com/products", {
+        //         method : "GET",
+        //         headers : {
+        //             "Content-Type" : "application/json",
+        //         },
+        //     });
+        //     let jsonResponse = await response.json();
+        //     console.log(jsonResponse);
+        // };
+        // callApi();
+
+        let page = document.getElementById("page");
+        let landDetail = document.getElementById("landDetail");
+        let lists = '';
+
+        fetch("https://fakestoreapi.com/products")
+            .then(response => response.json())
+            .then(result => {
+                for( let i = 0 ; i < result.length ; i++ ) {
+                    lists += `
+                        <tr onclick="detail(${result[i].id})">
+                            <td>${result[i].id}</td>
+                            <td>${result[i].title}</td>
+                            <td>${result[i].price}$</td>
+                            <td>${result[i].rating.rate}</td>
+                            <td>
+                                <a href="${result[i].image}" target="_blank"><img src="${result[i].image}" /></a>
+                            </td>
+                        </tr>    
+                    `;
+                }
+                page.innerHTML = lists;
+            });
+
+            function detail(id) {
+                fetch("https://fakestoreapi.com/products/" + id)
+                    .then(res => res.json())
+                    .then(data => {
+                        landDetail.innerHTML = `
+                            <div class="col-2">
+                                <img src="${data.image}" />
+                            </div>
+                            <div class="col">
+                                <h3>${data.title}</h3>
+                                <h3>${data.price} $</h3>
+                                <h3>${data.rating.rate}</h3>
+                            </div>
+                        `;
+                        landDetail.style.display = "flex";
+
+                    });
+            }
+
+    </script>
+</body>
+</html>
